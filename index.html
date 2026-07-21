@@ -208,6 +208,11 @@ p{
     flex-shrink:0;
 }
 
+.history-info{
+    flex:1;
+    min-width:0;
+}
+
 .history-date{
     font-size:12px;
     color:var(--text-sub);
@@ -218,6 +223,18 @@ p{
     font-size:14px;
     color:var(--text-main);
     font-weight:bold;
+    margin-bottom:4px;
+}
+
+.history-desc{
+    font-size:13px;
+    color:var(--text-sub);
+    line-height:1.4;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
 }
 
 .reading-view h2{
@@ -681,6 +698,7 @@ function showHistory(){
         item.appendChild(img);
 
         const info=document.createElement("div");
+        info.className="history-info";
 
         const dateDiv=document.createElement("div");
         dateDiv.className="history-date";
@@ -690,8 +708,13 @@ function showHistory(){
         namesDiv.className="history-cards";
         namesDiv.textContent=(entry.mode==="daily" ? "오늘의 운세 · " : "3장 스프레드 · ")+entry.cardNames.join(", ");
 
+        const descDiv=document.createElement("div");
+        descDiv.className="history-desc";
+        descDiv.textContent=cards.map(c=>c.meaning).join(" / ");
+
         info.appendChild(dateDiv);
         info.appendChild(namesDiv);
+        info.appendChild(descDiv);
         item.appendChild(info);
 
         list.appendChild(item);
