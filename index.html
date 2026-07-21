@@ -125,6 +125,14 @@ p{
     box-shadow:0 5px 10px rgba(0,0,0,.15);
 }
 
+.plus{
+    display:flex;
+    align-items:center;
+    font-size:24px;
+    font-weight:bold;
+    color:var(--text-sub);
+}
+
 button{
     display:block;
     margin:35px auto 0;
@@ -213,7 +221,15 @@ function createGame(){
 
     }
 
-    return numbers.sort((a,b)=>a-b);
+    numbers.sort((a,b)=>a-b);
+
+    let bonus;
+
+    do{
+        bonus=Math.floor(Math.random()*45)+1;
+    }while(numbers.includes(bonus));
+
+    return {numbers,bonus};
 
 }
 
@@ -238,7 +254,7 @@ function generateFiveGames(){
         const numbers=document.createElement("div");
         numbers.className="numbers";
 
-        game.forEach(num=>{
+        game.numbers.forEach(num=>{
 
             const ball=document.createElement("div");
             ball.className="ball";
@@ -248,6 +264,18 @@ function generateFiveGames(){
             numbers.appendChild(ball);
 
         });
+
+        const plus=document.createElement("div");
+        plus.className="plus";
+        plus.textContent="+";
+
+        const bonusBall=document.createElement("div");
+        bonusBall.className="ball";
+        bonusBall.style.background=getColor(game.bonus);
+        bonusBall.textContent=game.bonus;
+
+        numbers.appendChild(plus);
+        numbers.appendChild(bonusBall);
 
         gameDiv.appendChild(title);
         gameDiv.appendChild(numbers);
