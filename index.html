@@ -242,7 +242,7 @@ button:hover{
 🎲 번호 5게임 추천받기
 </button>
 
-<div class="form-container">
+<div class="form-container" id="formContainer" style="display:none;">
 
 <h2>🤝 제휴 문의</h2>
 <p>제휴 및 협업 문의는 아래 양식을 작성해주세요.</p>
@@ -362,6 +362,8 @@ function generateFiveGames(){
         container.appendChild(gameDiv);
 
     }
+
+    document.getElementById("formContainer").style.display="block";
 
 }
 
