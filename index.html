@@ -321,26 +321,7 @@ button:hover{
 
 <h2>💬 댓글</h2>
 
-<div id="disqus_thread"></div>
-<script>
-/**
- * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
- * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
- */
-/*
-var disqus_config = function () {
-this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
-this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-};
-*/
-(function() { // DON'T EDIT BELOW THIS LINE
-var d = document, s = d.createElement('script');
-s.src = 'https://productbuilder.disqus.com/embed.js';
-s.setAttribute('data-timestamp', +new Date());
-(d.head || d.body).appendChild(s);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<div id="giscusContainer"></div>
 
 </div>
 
@@ -440,11 +421,45 @@ function generateFiveGames(){
 
 }
 
+function loadGiscus(theme){
+
+    const script=document.createElement("script");
+    script.src="https://giscus.app/client.js";
+    script.setAttribute("data-repo","joduhan/productbuilder");
+    script.setAttribute("data-repo-id","R_kgDOTezNHg");
+    script.setAttribute("data-category","General");
+    script.setAttribute("data-category-id","DIC_kwDOTezNHs4DBoyQ");
+    script.setAttribute("data-mapping","pathname");
+    script.setAttribute("data-strict","0");
+    script.setAttribute("data-reactions-enabled","1");
+    script.setAttribute("data-emit-metadata","0");
+    script.setAttribute("data-input-position","bottom");
+    script.setAttribute("data-theme",theme==="dark" ? "dark" : "light");
+    script.setAttribute("data-lang","ko");
+    script.crossOrigin="anonymous";
+    script.async=true;
+
+    document.getElementById("giscusContainer").appendChild(script);
+
+}
+
+function syncGiscusTheme(theme){
+
+    const iframe=document.querySelector(".giscus-frame");
+    if(!iframe) return;
+
+    iframe.contentWindow.postMessage({
+        giscus:{setConfig:{theme:theme==="dark" ? "dark" : "light"}}
+    },"https://giscus.app");
+
+}
+
 function applyTheme(theme){
 
     document.documentElement.setAttribute("data-theme",theme);
     document.getElementById("themeToggle").textContent=theme==="dark" ? "☀️" : "🌙";
     localStorage.setItem("theme",theme);
+    syncGiscusTheme(theme);
 
 }
 
@@ -459,6 +474,7 @@ const savedTheme=localStorage.getItem("theme")
     || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 
 applyTheme(savedTheme);
+loadGiscus(savedTheme);
 
 document.getElementById("contactForm").addEventListener("submit", async function(e){
 
