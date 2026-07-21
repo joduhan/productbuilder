@@ -6,6 +6,24 @@
 <title>로또 번호 추천기 (5게임)</title>
 
 <style>
+:root{
+    --bg-gradient:linear-gradient(135deg,#4facfe,#00f2fe);
+    --card-bg:#fff;
+    --text-main:#333;
+    --text-sub:#777;
+    --game-bg:#fafafa;
+    --game-border:#e5e5e5;
+}
+
+[data-theme="dark"]{
+    --bg-gradient:linear-gradient(135deg,#232526,#0f2027);
+    --card-bg:#1e1e1e;
+    --text-main:#eee;
+    --text-sub:#aaa;
+    --game-bg:#2a2a2a;
+    --game-border:#3a3a3a;
+}
+
 *{
     margin:0;
     padding:0;
@@ -14,32 +32,55 @@
 }
 
 body{
-    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    background:var(--bg-gradient);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
     padding:40px 20px;
+    transition:background .3s;
 }
 
 .container{
+    position:relative;
     width:100%;
     max-width:850px;
-    background:#fff;
+    background:var(--card-bg);
     border-radius:20px;
     padding:35px;
     box-shadow:0 20px 40px rgba(0,0,0,.2);
+    transition:background .3s;
+}
+
+.theme-toggle{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:44px;
+    height:44px;
+    margin:0;
+    padding:0;
+    border-radius:50%;
+    font-size:20px;
+    background:var(--game-bg);
+    border:1px solid var(--game-border);
+    color:var(--text-main);
+}
+
+.theme-toggle:hover{
+    background:var(--game-bg);
+    transform:scale(1.1);
 }
 
 h1{
     text-align:center;
     margin-bottom:10px;
-    color:#333;
+    color:var(--text-main);
 }
 
 p{
     text-align:center;
-    color:#777;
+    color:var(--text-sub);
     margin-bottom:30px;
 }
 
@@ -50,17 +91,18 @@ p{
 }
 
 .game{
-    background:#fafafa;
+    background:var(--game-bg);
     border-radius:15px;
     padding:18px;
-    border:1px solid #e5e5e5;
+    border:1px solid var(--game-border);
+    transition:background .3s,border-color .3s;
 }
 
 .game-title{
     font-size:20px;
     font-weight:bold;
     margin-bottom:15px;
-    color:#333;
+    color:var(--text-main);
 }
 
 .numbers{
@@ -131,6 +173,8 @@ button:hover{
 <body>
 
 <div class="container">
+
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
 <h1>🎲 로또 번호 추천기</h1>
 <p>버튼을 누르면 로또 번호 5게임을 추천합니다.</p>
@@ -213,6 +257,26 @@ function generateFiveGames(){
     }
 
 }
+
+function applyTheme(theme){
+
+    document.documentElement.setAttribute("data-theme",theme);
+    document.getElementById("themeToggle").textContent=theme==="dark" ? "☀️" : "🌙";
+    localStorage.setItem("theme",theme);
+
+}
+
+function toggleTheme(){
+
+    const current=document.documentElement.getAttribute("data-theme");
+    applyTheme(current==="dark" ? "light" : "dark");
+
+}
+
+const savedTheme=localStorage.getItem("theme")
+    || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+applyTheme(savedTheme);
 
 </script>
 
