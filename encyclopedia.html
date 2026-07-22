@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="라이더-웨이트 타로 카드 78장 전체의 이름과 의미를 정리한 타로 카드 백과사전입니다. 메이저 아르카나 22장과 완드·컵·소드·펜타클 각 14장을 확인하세요.">
+<meta name="google-adsense-account" content="ca-pub-3859431049159163">
+<title>타로 카드 78장 백과사전 - 타로 리딩</title>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3859431049159163" crossorigin="anonymous"></script>
+
+<script src="tarot-data.js"></script>
+
+<style>
+:root{
+    --bg-gradient:linear-gradient(135deg,#4facfe,#00f2fe);
+    --card-bg:#fff;
+    --text-main:#333;
+    --text-sub:#777;
+    --game-bg:#fafafa;
+    --game-border:#e5e5e5;
+}
+
+[data-theme="dark"]{
+    --bg-gradient:linear-gradient(135deg,#232526,#0f2027);
+    --card-bg:#1e1e1e;
+    --text-main:#eee;
+    --text-sub:#aaa;
+    --game-bg:#2a2a2a;
+    --game-border:#3a3a3a;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Pretendard","Malgun Gothic",sans-serif;
+}
+
+body{
+    background:var(--bg-gradient);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:40px 20px;
+    transition:background .3s;
+}
+
+.container{
+    position:relative;
+    width:100%;
+    max-width:1000px;
+    margin:0 auto;
+    background:var(--card-bg);
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 20px 40px rgba(0,0,0,.2);
+    transition:background .3s;
+}
+
+.theme-toggle{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:44px;
+    height:44px;
+    margin:0;
+    padding:0;
+    border-radius:50%;
+    font-size:20px;
+    background:var(--game-bg);
+    border:1px solid var(--game-border);
+    color:var(--text-main);
+    cursor:pointer;
+}
+
+.back-link{
+    display:inline-block;
+    color:var(--text-sub);
+    font-size:14px;
+    text-decoration:none;
+    margin-bottom:15px;
+}
+
+.back-link:hover{
+    color:var(--text-main);
+}
+
+h1{
+    color:var(--text-main);
+    margin-bottom:8px;
+    font-size:24px;
+    text-align:center;
+}
+
+.intro{
+    color:var(--text-sub);
+    font-size:14px;
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.suit-section{
+    margin-bottom:36px;
+}
+
+.suit-title{
+    color:var(--text-main);
+    font-size:19px;
+    font-weight:bold;
+    margin-bottom:16px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--game-border);
+}
+
+.card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:16px;
+}
+
+.enc-card{
+    background:var(--game-bg);
+    border:1px solid var(--game-border);
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+}
+
+.enc-card img{
+    width:100%;
+    max-width:90px;
+    border-radius:8px;
+    margin-bottom:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+
+.enc-name{
+    font-size:13px;
+    font-weight:bold;
+    color:var(--text-main);
+    margin-bottom:4px;
+}
+
+.enc-meaning{
+    font-size:11px;
+    color:var(--text-sub);
+    line-height:1.4;
+}
+
+.site-footer{
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1px solid var(--game-border);
+    text-align:center;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:16px;
+}
+
+.site-footer a{
+    color:var(--text-sub);
+    text-decoration:none;
+    font-size:13px;
+}
+
+.site-footer a:hover{
+    color:var(--text-main);
+}
+
+@media(max-width:600px){
+
+.container{
+    padding:22px 18px;
+}
+
+.card-grid{
+    grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+    gap:10px;
+}
+
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
+<a class="back-link" href="index.html">← 타로 리딩으로 돌아가기</a>
+
+<h1>📖 타로 카드 78장 백과사전</h1>
+<p class="intro">라이더-웨이트 타로 덱 전체 78장의 이름과 의미를 정리했습니다.</p>
+
+<div id="encyclopediaContent"></div>
+
+<div class="site-footer">
+<a href="index.html">🔮 타로 리딩</a>
+<a href="encyclopedia.html">📖 카드 백과사전</a>
+<a href="about.html">ℹ️ 사이트 소개</a>
+<a href="privacy.html">🔒 개인정보처리방침</a>
+</div>
+
+</div>
+
+<script>
+
+function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme",theme);
+    document.getElementById("themeToggle").textContent=theme==="dark" ? "☀️" : "🌙";
+    localStorage.setItem("theme",theme);
+}
+
+function toggleTheme(){
+    const current=document.documentElement.getAttribute("data-theme");
+    applyTheme(current==="dark" ? "light" : "dark");
+}
+
+const savedTheme=localStorage.getItem("theme")
+    || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+applyTheme(savedTheme);
+
+const suits=[
+    {title:"메이저 아르카나 (22장)",cards:tarotDeck.slice(0,22)},
+    {title:"완드 (14장)",cards:tarotDeck.slice(22,36)},
+    {title:"컵 (14장)",cards:tarotDeck.slice(36,50)},
+    {title:"소드 (14장)",cards:tarotDeck.slice(50,64)},
+    {title:"펜타클 (14장)",cards:tarotDeck.slice(64,78)}
+];
+
+const content=document.getElementById("encyclopediaContent");
+
+suits.forEach(suit=>{
+
+    const section=document.createElement("div");
+    section.className="suit-section";
+
+    const title=document.createElement("div");
+    title.className="suit-title";
+    title.textContent=suit.title;
+    section.appendChild(title);
+
+    const grid=document.createElement("div");
+    grid.className="card-grid";
+
+    suit.cards.forEach(card=>{
+
+        const cardEl=document.createElement("div");
+        cardEl.className="enc-card";
+
+        const img=document.createElement("img");
+        img.src=card.img;
+        img.alt=card.name;
+        img.loading="lazy";
+
+        const name=document.createElement("div");
+        name.className="enc-name";
+        name.textContent=card.name;
+
+        const meaning=document.createElement("div");
+        meaning.className="enc-meaning";
+        meaning.textContent=card.meaning;
+
+        cardEl.appendChild(img);
+        cardEl.appendChild(name);
+        cardEl.appendChild(meaning);
+
+        grid.appendChild(cardEl);
+
+    });
+
+    section.appendChild(grid);
+    content.appendChild(section);
+
+});
+
+</script>
+
+</body>
+</html>
