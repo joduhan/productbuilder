@@ -169,7 +169,48 @@ h1{
     color:var(--text-main);
 }
 
+.bottom-nav{
+    display:none;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:1500;
+    background:var(--card-bg);
+    border-top:1px solid var(--game-border);
+    padding:8px 0 max(8px,env(safe-area-inset-bottom));
+    box-shadow:0 -4px 16px rgba(0,0,0,.1);
+}
+
+.bottom-nav a{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    color:var(--text-sub);
+    text-decoration:none;
+    font-size:11px;
+    padding:4px 0;
+}
+
+.bottom-nav a.active{
+    color:#4facfe;
+}
+
+.bottom-nav .bn-icon{
+    font-size:20px;
+}
+
 @media(max-width:600px){
+
+body{
+    padding-bottom:84px;
+}
+
+.bottom-nav{
+    display:flex;
+}
 
 .container{
     padding:22px 18px;
@@ -279,6 +320,13 @@ suits.forEach(suit=>{
 });
 
 </script>
+
+<nav class="bottom-nav">
+<a href="index.html"><span class="bn-icon">🔮</span>홈</a>
+<a href="encyclopedia.html" class="active"><span class="bn-icon">📖</span>백과사전</a>
+<a href="about.html"><span class="bn-icon">ℹ️</span>소개</a>
+<a href="privacy.html"><span class="bn-icon">🔒</span>정책</a>
+</nav>
 
 </body>
 </html>
