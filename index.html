@@ -660,12 +660,9 @@ h1{
 
 <div id="tarotConclusion" class="tarot-conclusion"></div>
 
-<div id="aiInterpretation" class="tarot-conclusion" style="display:none;"></div>
-
 </div>
 
 <div class="action-row">
-<button class="secondary-btn" onclick="requestAiInterpretation()" id="aiBtn">🤖 AI 해석 보기</button>
 <button class="secondary-btn" onclick="shareReading()">📤 공유하기</button>
 <button class="secondary-btn" onclick="saveReadingAsImage()">🖼 이미지 저장</button>
 </div>
@@ -915,12 +912,6 @@ function replayHistory(mode,picks){
 
     renderReading(picks);
 
-    document.getElementById("aiInterpretation").style.display="none";
-    document.getElementById("aiInterpretation").innerHTML="";
-    const aiBtn=document.getElementById("aiBtn");
-    aiBtn.disabled=false;
-    aiBtn.textContent="🤖 AI 해석 보기";
-
 }
 
 const cardCounts={daily:1,spread:3,love:2};
@@ -933,12 +924,6 @@ function drawCards(){
 
     renderReading(picks);
     saveHistory(currentMode,picks);
-
-    document.getElementById("aiInterpretation").style.display="none";
-    document.getElementById("aiInterpretation").innerHTML="";
-    const aiBtn=document.getElementById("aiBtn");
-    aiBtn.disabled=false;
-    aiBtn.textContent="🤖 AI 해석 보기";
 
 }
 
@@ -1053,75 +1038,6 @@ function currentLabels(){
     };
 
     return labelsByMode[currentMode] || [];
-
-}
-
-async function requestAiInterpretation(){
-
-    const aiBtn=document.getElementById("aiBtn");
-    const box=document.getElementById("aiInterpretation");
-    const labels=currentLabels();
-
-    aiBtn.disabled=true;
-    aiBtn.textContent="해석 중...";
-
-    try{
-
-        const response=await fetch("/api/interpret",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({
-                cards:lastPicks.map((card,i)=>({
-                    name:card.name,
-                    meaning:card.meaning,
-                    label:labels[i] || null
-                }))
-            })
-        });
-
-        const data=await response.json();
-
-        box.innerHTML="";
-
-        if(!response.ok || data.error){
-            const p=document.createElement("p");
-            p.textContent=data.error || "AI 해석을 불러오지 못했습니다.";
-            box.appendChild(p);
-            box.style.display="block";
-            aiBtn.disabled=false;
-            aiBtn.textContent="🤖 AI 해석 보기";
-            return;
-        }
-
-        const heading=document.createElement("h3");
-        heading.textContent="🤖 AI 해석";
-        box.appendChild(heading);
-
-        data.interpretations.forEach((text,i)=>{
-            const p=document.createElement("p");
-            if(labels[i]){
-                const strong=document.createElement("strong");
-                strong.textContent=labels[i]+" — ";
-                p.appendChild(strong);
-            }
-            p.appendChild(document.createTextNode(text));
-            box.appendChild(p);
-        });
-
-        box.style.display="block";
-        aiBtn.textContent="🤖 AI 해석 완료";
-
-    }catch(err){
-
-        box.innerHTML="";
-        const p=document.createElement("p");
-        p.textContent="AI 해석 요청 중 오류가 발생했습니다.";
-        box.appendChild(p);
-        box.style.display="block";
-        aiBtn.disabled=false;
-        aiBtn.textContent="🤖 AI 해석 보기";
-
-    }
 
 }
 
