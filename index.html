@@ -972,6 +972,7 @@ function renderReading(picks){
         }
 
         const img=document.createElement("img");
+        img.crossOrigin="anonymous";
         img.src=card.img;
         img.alt=card.name;
 
@@ -1154,7 +1155,8 @@ function saveReadingAsImage(){
 
     html2canvas(target,{
         backgroundColor:bg,
-        scale:2
+        scale:2,
+        useCORS:true
     }).then(canvas=>{
         const link=document.createElement("a");
         link.download="타로리딩결과.png";
