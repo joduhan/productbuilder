@@ -489,6 +489,35 @@ button:hover{
     color:#4facfe;
 }
 
+.support-box{
+    margin-top:24px;
+    padding:18px 20px;
+    background:var(--game-bg);
+    border:1px solid var(--game-border);
+    border-radius:14px;
+    text-align:center;
+}
+
+.support-box p{
+    text-align:center;
+    margin-bottom:14px;
+}
+
+.support-btn{
+    display:inline-block;
+    padding:12px 28px;
+    border-radius:10px;
+    background:#ffdd57;
+    color:#333;
+    font-weight:bold;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.support-btn:hover{
+    background:#ffd23f;
+}
+
 @keyframes pop{
     from{
         transform:scale(0);
@@ -727,6 +756,94 @@ h1{
     line-height:1.5;
 }
 
+.auth-notice code{
+    font-family:ui-monospace,Consolas,monospace;
+    background:var(--card-bg);
+    padding:1px 4px;
+    border-radius:4px;
+}
+
+.auth-error{
+    color:#ff4d4d;
+    font-size:13px;
+    text-align:center;
+    margin-top:-6px;
+    margin-bottom:14px;
+}
+
+.auth-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0;
+    color:var(--text-sub);
+    font-size:12px;
+}
+
+.auth-divider::before,
+.auth-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--game-border);
+}
+
+.google-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    margin:0;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid var(--game-border);
+    background:var(--game-bg);
+    color:var(--text-main);
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.google-btn:hover{
+    background:var(--game-bg);
+    transform:none;
+}
+
+.google-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#fff;
+    color:#4285F4;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.auth-buttons{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-chip{
+    display:flex;
+    align-items:center;
+    height:48px;
+    padding:0 16px;
+    border-radius:24px;
+    border:1px solid var(--game-border);
+    background:var(--card-bg);
+    color:var(--text-main);
+    font-size:13px;
+    font-weight:bold;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+    white-space:nowrap;
+}
+
 .animal-panel{
     position:absolute;
     top:56px;
@@ -819,8 +936,15 @@ h1{
 
 </div>
 
+<div id="authLoggedOut" class="auth-buttons">
 <button class="icon-toggle" onclick="openAuthModal('login')">🔑 로그인</button>
 <button class="icon-toggle" onclick="openAuthModal('signup')">📝 회원가입</button>
+</div>
+
+<div id="authLoggedIn" class="auth-buttons" style="display:none;">
+<span class="user-chip" id="userChip"></span>
+<button class="icon-toggle" onclick="handleSignOut()">로그아웃</button>
+</div>
 
 </div>
 
@@ -849,13 +973,21 @@ h1{
 <input type="password" id="authPassword" required>
 </div>
 
+<p id="authError" class="auth-error" style="display:none;"></p>
+
 <button type="submit" id="authSubmitBtn">로그인</button>
 
 </form>
 
+<div class="auth-divider"><span>또는</span></div>
+
+<button class="google-btn" onclick="handleGoogleSignIn()">
+<span class="google-icon">G</span> Google로 계속하기
+</button>
+
 <p id="authSwitchText">계정이 없으신가요? <span class="auth-link" onclick="switchAuthMode()">회원가입</span></p>
 
-<p class="auth-notice">🚧 로그인/회원가입 기능은 현재 준비 중입니다. 화면만 미리 확인하실 수 있어요.</p>
+<p class="auth-notice" id="authNotice" style="display:none;">🚧 Firebase 설정이 아직 연결되지 않았습니다. <code>firebase-config.js</code>에 프로젝트 설정값을 넣어주세요.</p>
 
 </div>
 
@@ -888,6 +1020,12 @@ h1{
 <div class="mode-icon">💕</div>
 <div class="mode-title">연애운 리딩</div>
 <div class="mode-desc">나의 마음 · 상대의 마음 보기</div>
+</div>
+
+<div class="mode-btn" onclick="startReading('yesno')">
+<div class="mode-icon">❓</div>
+<div class="mode-title">예/아니오 리딩</div>
+<div class="mode-desc">고민 중인 선택, 카드로 빠르게 답 듣기</div>
 </div>
 
 </div>
@@ -934,13 +1072,19 @@ h1{
 <h2>타로 카드란 무엇인가요?</h2>
 <p>타로 카드는 78장의 그림 카드로 구성된 상징 체계로, 14세기 유럽에서 카드 게임 용도로 처음 등장한 뒤 18세기 이후 점술과 자기 성찰의 도구로 널리 쓰이기 시작했습니다. 카드는 크게 인생의 큰 흐름과 전환점을 상징하는 메이저 아르카나 22장과, 일상의 구체적인 상황을 보여주는 마이너 아르카나 56장(완드·컵·소드·펜타클 4개 수트)으로 나뉩니다. 이 사이트는 1909년 처음 출간되어 지금까지도 가장 널리 쓰이는 라이더-웨이트(Rider-Waite) 덱의 그림을 그대로 사용합니다.</p>
 
-<h2>이 사이트에서 제공하는 3가지 리딩 방식</h2>
+<h2>이 사이트에서 제공하는 4가지 리딩 방식</h2>
 <p><strong>오늘의 운세</strong> — 하루에 한 장의 카드를 뽑아 그날의 전반적인 분위기와 함께 애정·금전·건강 세 영역의 흐름을 짧게 짚어봅니다. 아침에 하루를 시작하며 가볍게 확인하기 좋은 방식입니다.</p>
 <p><strong>3장 스프레드</strong> — 과거·현재·미래 세 장의 카드를 통해 하나의 고민이나 상황이 어떻게 흘러왔고, 지금 어디에 있으며, 앞으로 어떤 방향으로 나아갈 수 있는지를 순서대로 살펴봅니다. 구체적인 고민이 있을 때 유용합니다.</p>
 <p><strong>연애운 리딩</strong> — '나의 마음'과 '상대의 마음'을 각각 한 장씩 뽑아, 지금 관계에서 두 사람이 각자 어떤 감정과 태도를 가지고 있는지를 비교해봅니다.</p>
+<p><strong>예/아니오 리딩</strong> — 지금 고민 중인 선택이 있다면 카드 한 장으로 빠르게 방향을 확인해봅니다. "예에 가까움 / 중립 / 아니오에 가까움" 세 가지로 답을 제시합니다.</p>
 
 <h2>타로를 더 잘 활용하는 방법</h2>
 <p>타로 카드는 미래를 확정적으로 예언하는 도구가 아니라, 지금 내가 놓치고 있던 감정이나 관점을 다른 각도에서 바라보게 해주는 자기 성찰의 도구에 가깝습니다. 카드가 나온 그대로를 받아들이기보다 "왜 지금 이 카드가 마음에 와닿는가"를 스스로에게 물어보면 더 의미 있는 리딩이 됩니다. 결과가 마음에 들지 않는다면 "다시 뽑기"로 다른 카드를 확인할 수 있고, 각 카드의 자세한 의미는 <a href="encyclopedia.html">타로 카드 백과사전</a> 페이지에서 더 찾아볼 수 있습니다. 본 결과는 오락 및 자기 성찰을 목적으로 제공되며, 전문적인 조언을 대체하지 않습니다.</p>
+
+<div class="support-box">
+<p>☕ 이 사이트가 마음에 드셨다면, 서버 운영비에 보탬이 되는 작은 후원을 해주실 수 있어요. 광고 수익만으로는 부족한 부분을 채워 더 좋은 기능으로 이어갑니다.</p>
+<a class="support-btn" href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank" rel="noopener">☕ 후원하기</a>
+</div>
 
 </div>
 
@@ -995,6 +1139,11 @@ h1{
 
 <script src="tarot-data.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
 <script>
 
 const luckText={
@@ -1015,7 +1164,8 @@ function shuffleDeck(){
 const readingTitles={
     daily:"🃏 오늘의 운세",
     spread:"🔯 3장 스프레드",
-    love:"💕 연애운 리딩"
+    love:"💕 연애운 리딩",
+    yesno:"❓ 예/아니오 리딩"
 };
 
 function startReading(mode){
@@ -1042,12 +1192,35 @@ function backToMenu(){
 
 }
 
-function showHistory(){
+async function showHistory(){
 
     document.getElementById("modeSelect").style.display="none";
     document.getElementById("historyView").style.display="block";
 
-    const history=JSON.parse(localStorage.getItem("tarotHistory")||"[]");
+    const list=document.getElementById("historyList");
+    list.innerHTML="아직 지난 기록이 없습니다.";
+
+    const user=firebaseEnabled ? firebase.auth().currentUser : null;
+    let history=JSON.parse(localStorage.getItem("tarotHistory")||"[]");
+
+    if(user){
+        try{
+            const snapshot=await firebase.firestore()
+                .collection("users").doc(user.uid)
+                .collection("readings")
+                .orderBy("date","desc")
+                .limit(30)
+                .get();
+            history=snapshot.docs.map(doc=>doc.data());
+        }catch(err){}
+    }
+
+    renderHistoryList(history);
+
+}
+
+function renderHistoryList(history){
+
     const list=document.getElementById("historyList");
     list.innerHTML="";
 
@@ -1109,7 +1282,7 @@ function replayHistory(mode,picks){
 
 }
 
-const cardCounts={daily:1,spread:3,love:2};
+const cardCounts={daily:1,spread:3,love:2,yesno:1};
 
 function drawCards(){
 
@@ -1124,9 +1297,44 @@ function drawCards(){
 
 function saveHistory(mode,picks){
 
+    const entry={date:Date.now(),mode:mode,cardNames:picks.map(c=>c.name)};
+
     const history=JSON.parse(localStorage.getItem("tarotHistory")||"[]");
-    history.unshift({date:Date.now(),mode:mode,cardNames:picks.map(c=>c.name)});
+    history.unshift(entry);
     localStorage.setItem("tarotHistory",JSON.stringify(history.slice(0,30)));
+
+    const user=firebaseEnabled ? firebase.auth().currentUser : null;
+
+    if(user){
+        firebase.firestore()
+            .collection("users").doc(user.uid)
+            .collection("readings").add(entry)
+            .catch(()=>{});
+    }
+
+}
+
+async function syncLocalHistoryToCloud(user){
+
+    if(localStorage.getItem("historyCloudSynced")==="true") return;
+
+    const history=JSON.parse(localStorage.getItem("tarotHistory")||"[]");
+    if(history.length===0){
+        localStorage.setItem("historyCloudSynced","true");
+        return;
+    }
+
+    const batch=firebase.firestore().batch();
+    const col=firebase.firestore().collection("users").doc(user.uid).collection("readings");
+
+    history.forEach(entry=>{
+        batch.set(col.doc(),entry);
+    });
+
+    try{
+        await batch.commit();
+        localStorage.setItem("historyCloudSynced","true");
+    }catch(err){}
 
 }
 
@@ -1200,6 +1408,29 @@ function renderReading(picks){
             p.appendChild(document.createTextNode(text));
             conclusion.appendChild(p);
         });
+
+    }else if(currentMode==="yesno"){
+
+        const card=picks[0];
+        const verdict=card.luck>=4 ? "🙆 예에 가깝습니다" : card.luck===3 ? "🤔 중립 — 조금 더 지켜보세요" : "🙅 아니오에 가깝습니다";
+
+        const heading=document.createElement("h3");
+        heading.textContent="❓ 답변";
+        conclusion.appendChild(heading);
+
+        const verdictP=document.createElement("p");
+        const verdictStrong=document.createElement("strong");
+        verdictStrong.textContent=verdict;
+        verdictStrong.style.fontSize="16px";
+        verdictP.appendChild(verdictStrong);
+        conclusion.appendChild(verdictP);
+
+        const reasonP=document.createElement("p");
+        const reasonStrong=document.createElement("strong");
+        reasonStrong.textContent="근거 — ";
+        reasonP.appendChild(reasonStrong);
+        reasonP.appendChild(document.createTextNode(card.advice));
+        conclusion.appendChild(reasonP);
 
     }else{
 
@@ -1375,12 +1606,118 @@ function switchAuthMode(){
 
 }
 
-function handleAuthSubmit(event){
+const authErrorMessages={
+    "auth/email-already-in-use":"이미 가입된 이메일입니다.",
+    "auth/invalid-email":"올바른 이메일 형식이 아닙니다.",
+    "auth/weak-password":"비밀번호는 6자 이상이어야 합니다.",
+    "auth/user-not-found":"가입되지 않은 이메일입니다.",
+    "auth/wrong-password":"비밀번호가 올바르지 않습니다.",
+    "auth/invalid-credential":"이메일 또는 비밀번호가 올바르지 않습니다.",
+    "auth/too-many-requests":"시도가 너무 많습니다. 잠시 후 다시 시도해주세요."
+};
+
+function showAuthError(message){
+
+    const errorEl=document.getElementById("authError");
+    errorEl.textContent=message;
+    errorEl.style.display="block";
+
+}
+
+async function handleAuthSubmit(event){
 
     event.preventDefault();
-    alert("로그인/회원가입 기능은 현재 준비 중입니다.");
+
+    if(!firebaseEnabled){
+        document.getElementById("authNotice").style.display="block";
+        return false;
+    }
+
+    const mode=document.getElementById("authForm").dataset.mode;
+    const email=document.getElementById("authEmail").value;
+    const password=document.getElementById("authPassword").value;
+    const name=document.getElementById("authName").value;
+    const submitBtn=document.getElementById("authSubmitBtn");
+
+    document.getElementById("authError").style.display="none";
+    submitBtn.disabled=true;
+
+    try{
+
+        if(mode==="signup"){
+
+            const cred=await firebase.auth().createUserWithEmailAndPassword(email,password);
+            if(name) await cred.user.updateProfile({displayName:name});
+
+        }else{
+
+            await firebase.auth().signInWithEmailAndPassword(email,password);
+
+        }
+
+        closeAuthModal();
+        document.getElementById("authForm").reset();
+
+    }catch(err){
+
+        showAuthError(authErrorMessages[err.code] || "오류가 발생했습니다: "+err.message);
+
+    }
+
+    submitBtn.disabled=false;
+
     return false;
 
+}
+
+async function handleGoogleSignIn(){
+
+    if(!firebaseEnabled){
+        document.getElementById("authNotice").style.display="block";
+        return;
+    }
+
+    document.getElementById("authError").style.display="none";
+
+    try{
+
+        const provider=new firebase.auth.GoogleAuthProvider();
+        await firebase.auth().signInWithPopup(provider);
+        closeAuthModal();
+
+    }catch(err){
+
+        showAuthError("Google 로그인에 실패했습니다: "+err.message);
+
+    }
+
+}
+
+function handleSignOut(){
+
+    firebase.auth().signOut();
+
+}
+
+function updateAuthUI(user){
+
+    const loggedOut=document.getElementById("authLoggedOut");
+    const loggedIn=document.getElementById("authLoggedIn");
+
+    if(user){
+        loggedOut.style.display="none";
+        loggedIn.style.display="flex";
+        document.getElementById("userChip").textContent="👤 "+(user.displayName || user.email);
+        syncLocalHistoryToCloud(user);
+    }else{
+        loggedOut.style.display="flex";
+        loggedIn.style.display="none";
+    }
+
+}
+
+if(firebaseEnabled){
+    firebase.auth().onAuthStateChanged(updateAuthUI);
 }
 
 async function handleAnimalFile(event){
