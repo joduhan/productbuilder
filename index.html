@@ -57,6 +57,10 @@
     font-family:"Pretendard","Malgun Gothic",sans-serif;
 }
 
+html{
+    overflow-x:hidden;
+}
+
 body{
     background:var(--bg-gradient);
     min-height:100vh;
@@ -65,6 +69,8 @@ body{
     align-items:center;
     padding:40px 20px;
     transition:background .3s;
+    overflow-x:hidden;
+    width:100%;
 }
 
 .page{
@@ -570,6 +576,21 @@ h1{
     gap:14px;
 }
 
+.tarot-result.multi{
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    padding:2px 6px 12px;
+    margin:0 -6px;
+    -webkit-overflow-scrolling:touch;
+}
+
+.tarot-result.multi .tarot-card{
+    flex:0 0 auto;
+    scroll-snap-align:center;
+}
+
 .tarot-card{
     width:100px;
 }
@@ -584,6 +605,17 @@ h1{
 
 .top-right-bar{
     top:70px;
+    right:14px;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    max-width:calc(100vw - 28px);
+}
+
+.animal-toggle{
+    width:40px;
+    height:40px;
+    font-size:16px;
 }
 
 .animal-panel{
@@ -597,6 +629,57 @@ h1{
     font-size:12px;
 }
 
+.icon-label{
+    display:none;
+}
+
+.user-chip{
+    height:40px;
+    max-width:90px;
+    padding:0 10px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.auth-buttons{
+    gap:8px;
+}
+
+.auth-modal-backdrop{
+    align-items:flex-end;
+    padding:0;
+}
+
+.auth-modal{
+    max-width:100%;
+    width:100%;
+    border-radius:20px 20px 0 0;
+    padding:30px 22px calc(24px + env(safe-area-inset-bottom));
+    animation:sheetUp .25s ease;
+}
+
+.auth-modal::before{
+    content:"";
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:36px;
+    height:4px;
+    border-radius:2px;
+    background:var(--game-border);
+}
+
+.auth-modal-close{
+    top:22px;
+}
+
+}
+
+@keyframes sheetUp{
+    from{transform:translateY(100%);}
+    to{transform:translateY(0);}
 }
 
 .bottom-nav{
@@ -937,13 +1020,13 @@ h1{
 </div>
 
 <div id="authLoggedOut" class="auth-buttons">
-<button class="icon-toggle" onclick="openAuthModal('login')">🔑 로그인</button>
-<button class="icon-toggle" onclick="openAuthModal('signup')">📝 회원가입</button>
+<button class="icon-toggle" onclick="openAuthModal('login')">🔑<span class="icon-label"> 로그인</span></button>
+<button class="icon-toggle" onclick="openAuthModal('signup')">📝<span class="icon-label"> 회원가입</span></button>
 </div>
 
 <div id="authLoggedIn" class="auth-buttons" style="display:none;">
 <span class="user-chip" id="userChip"></span>
-<button class="icon-toggle" onclick="handleSignOut()">로그아웃</button>
+<button class="icon-toggle" onclick="handleSignOut()">🚪<span class="icon-label"> 로그아웃</span></button>
 </div>
 
 </div>
@@ -1346,6 +1429,7 @@ function renderReading(picks){
 
     const result=document.getElementById("tarotResult");
     result.innerHTML="";
+    result.classList.toggle("multi",picks.length>1);
 
     picks.forEach((card,i)=>{
 
