@@ -550,15 +550,18 @@ body{
     padding:22px 18px;
 }
 
+.container{
+    padding-top:78px;
+}
+
 h1{
     font-size:22px;
 }
 
-.theme-toggle{
-    top:14px;
-    right:14px;
-    width:38px;
-    height:38px;
+.top-right-bar .theme-toggle{
+    position:static;
+    width:40px;
+    height:40px;
     font-size:16px;
 }
 
@@ -604,7 +607,8 @@ h1{
 }
 
 .top-right-bar{
-    top:70px;
+    position:absolute;
+    top:24px;
     right:14px;
     gap:8px;
     flex-wrap:wrap;
@@ -1905,6 +1909,25 @@ const savedTheme=localStorage.getItem("theme")
 
 applyTheme(savedTheme);
 loadGiscus(savedTheme);
+
+const mobileLayoutQuery=window.matchMedia("(max-width:600px)");
+
+function placeThemeToggle(){
+
+    const btn=document.getElementById("themeToggle");
+    const bar=document.querySelector(".top-right-bar");
+    const container=document.querySelector(".container");
+
+    if(mobileLayoutQuery.matches){
+        if(btn.parentElement!==bar) bar.insertBefore(btn,bar.firstChild);
+    }else{
+        if(btn.parentElement!==container) container.insertBefore(btn,container.firstChild);
+    }
+
+}
+
+placeThemeToggle();
+mobileLayoutQuery.addEventListener("change",placeThemeToggle);
 
 document.getElementById("contactForm").addEventListener("submit", async function(e){
 
