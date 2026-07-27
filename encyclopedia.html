@@ -37,6 +37,22 @@
 <meta name="twitter:title" content="타로 카드 78장 백과사전 - 타로 리딩">
 <meta name="twitter:description" content="라이더-웨이트 타로 카드 78장 전체의 이름과 의미를 정리한 타로 카드 백과사전입니다.">
 <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/0/09/The_Star_%28Rider-Waite_Smith_tarot_deck%29.png">
+<link rel="canonical" href="https://productbuilder-b9n.pages.dev/encyclopedia.html">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "타로 카드 78장 백과사전",
+  "url": "https://productbuilder-b9n.pages.dev/encyclopedia.html",
+  "description": "라이더-웨이트 타로 카드 78장 전체의 이름과 의미를 정리한 타로 카드 백과사전입니다.",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "타로 리딩",
+    "url": "https://productbuilder-b9n.pages.dev/"
+  }
+}
+</script>
 
 <title>타로 카드 78장 백과사전 - 타로 리딩</title>
 
@@ -362,6 +378,23 @@ suits.forEach(suit=>{
     content.appendChild(section);
 
 });
+
+const itemListLd={
+    "@context":"https://schema.org",
+    "@type":"ItemList",
+    "name":"타로 카드 78장 목록",
+    "itemListElement":tarotDeck.map((card,i)=>({
+        "@type":"ListItem",
+        "position":i+1,
+        "name":card.name,
+        "description":card.meaning
+    }))
+};
+
+const ldScript=document.createElement("script");
+ldScript.type="application/ld+json";
+ldScript.textContent=JSON.stringify(itemListLd);
+document.head.appendChild(ldScript);
 
 </script>
 

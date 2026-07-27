@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://productbuilder-b9n.pages.dev/sitemap.xml
