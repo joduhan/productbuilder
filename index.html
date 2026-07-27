@@ -1330,7 +1330,6 @@ function wikimediaThumb(url,width){
 function preloadDeckImages(){
     tarotDeck.forEach(card=>{
         const img=new Image();
-        img.crossOrigin="anonymous";
         img.src=wikimediaThumb(card.img,250);
     });
 }
@@ -1547,7 +1546,6 @@ function renderReading(picks){
         const img=document.createElement("img");
         img.className="card-pending";
         img.style.animationDelay=(i*150)+"ms";
-        img.crossOrigin="anonymous";
         img.alt=card.name;
 
         const revealCard=()=>{
