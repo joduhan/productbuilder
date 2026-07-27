@@ -84,3 +84,7 @@ const tarotDeck=[
     {name:"펜타클 킹",img:"https://upload.wikimedia.org/wikipedia/commons/a/a5/King_of_Pentacles_%28Rider-Waite_Smith_tarot_deck%29.png",meaning:"노력으로 이룬 물질적 성공과 여유",advice:"그동안의 노력이 물질적인 성과로 돌아올 것입니다.",luck:5}
 
 ];
+
+function tarotCardId(card){
+    return "card-"+tarotDeck.indexOf(card);
+}

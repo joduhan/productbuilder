@@ -211,6 +211,7 @@ p{
 }
 
 .mode-btn{
+    position:relative;
     flex:1 1 220px;
     max-width:260px;
     background:var(--game-bg);
@@ -220,6 +221,18 @@ p{
     text-align:center;
     cursor:pointer;
     transition:.3s;
+}
+
+.mode-badge{
+    position:absolute;
+    top:10px;
+    right:10px;
+    font-size:11px;
+    font-weight:bold;
+    color:#fff;
+    background:#4facfe;
+    padding:3px 8px;
+    border-radius:10px;
 }
 
 .mode-btn:hover{
@@ -380,9 +393,15 @@ p{
 }
 
 .tarot-name{
+    display:block;
     font-weight:bold;
     color:var(--text-main);
     margin-bottom:6px;
+    text-decoration:none;
+}
+
+.tarot-name:hover{
+    text-decoration:underline;
 }
 
 .tarot-meaning{
@@ -441,6 +460,29 @@ button:hover{
     justify-content:center;
     gap:10px;
     margin-top:25px;
+}
+
+.other-modes{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:16px;
+}
+
+.other-mode-link{
+    font-size:13px;
+    color:var(--text-sub);
+    cursor:pointer;
+    padding:6px 12px;
+    border-radius:20px;
+    border:1px solid var(--game-border);
+    transition:.2s;
+}
+
+.other-mode-link:hover{
+    color:var(--text-main);
+    border-color:#4facfe;
 }
 
 .secondary-btn{
@@ -1133,18 +1175,21 @@ h1{
 <div id="modeSelect" class="mode-select">
 
 <div class="mode-btn" onclick="startReading('daily')">
+<div class="mode-badge">무료</div>
 <div class="mode-icon">🃏</div>
 <div class="mode-title">오늘의 운세</div>
 <div class="mode-desc">카드 1장으로 보는 오늘의 운세</div>
 </div>
 
 <div class="mode-btn" onclick="startReading('spread')">
+<div class="mode-badge">무료</div>
 <div class="mode-icon">🔯</div>
 <div class="mode-title">3장 스프레드</div>
 <div class="mode-desc">과거 · 현재 · 미래 흐름 보기</div>
 </div>
 
 <div class="mode-btn" onclick="startReading('love')">
+<div class="mode-badge">무료</div>
 <div class="mode-icon">💕</div>
 <div class="mode-title">연애운 리딩</div>
 <div class="mode-desc">나의 마음 · 상대의 마음 보기</div>
@@ -1186,6 +1231,8 @@ h1{
 </div>
 
 <button onclick="drawCards()">🔮 다시 뽑기</button>
+
+<div class="other-modes" id="otherModes"></div>
 
 </div>
 
@@ -1519,8 +1566,10 @@ function renderReading(picks){
 
         img.src=wikimediaThumb(card.img,250);
 
-        const name=document.createElement("div");
+        const name=document.createElement("a");
         name.className="tarot-name";
+        name.href="encyclopedia.html#"+tarotCardId(card);
+        name.title="이 카드의 자세한 의미 보기";
         name.textContent=card.name;
 
         const meaning=document.createElement("div");
@@ -1583,8 +1632,29 @@ function renderReading(picks){
 
     }
 
+    renderOtherModes();
+
     document.getElementById("formContainer").style.display="block";
     document.getElementById("commentsContainer").style.display="block";
+
+}
+
+function renderOtherModes(){
+
+    const container=document.getElementById("otherModes");
+    if(!container) return;
+
+    container.innerHTML="";
+
+    Object.keys(readingTitles).filter(m=>m!==currentMode).forEach(m=>{
+
+        const link=document.createElement("span");
+        link.className="other-mode-link";
+        link.textContent=readingTitles[m]+" 해보기";
+        link.onclick=()=>startReading(m);
+        container.appendChild(link);
+
+    });
 
 }
 

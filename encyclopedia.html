@@ -178,6 +178,12 @@ h1{
     border-radius:12px;
     padding:12px;
     text-align:center;
+    scroll-margin-top:20px;
+}
+
+.enc-card:target{
+    outline:2px solid #4facfe;
+    outline-offset:2px;
 }
 
 .enc-card img{
@@ -352,6 +358,7 @@ suits.forEach(suit=>{
 
         const cardEl=document.createElement("div");
         cardEl.className="enc-card";
+        cardEl.id=tarotCardId(card);
 
         const img=document.createElement("img");
         img.src=wikimediaThumb(card.img,250);
@@ -378,6 +385,11 @@ suits.forEach(suit=>{
     content.appendChild(section);
 
 });
+
+if(location.hash){
+    const target=document.querySelector(location.hash);
+    if(target) target.scrollIntoView({block:"center"});
+}
 
 const itemListLd={
     "@context":"https://schema.org",
