@@ -317,6 +317,10 @@ p{
     margin-bottom:10px;
 }
 
+.card-pending{
+    opacity:0;
+}
+
 .card-flip{
     animation-name:cardFlip;
     animation-duration:.6s;
@@ -1249,6 +1253,20 @@ const luckText={
 let currentMode=null;
 let lastPicks=[];
 
+function preloadDeckImages(){
+    tarotDeck.forEach(card=>{
+        const img=new Image();
+        img.crossOrigin="anonymous";
+        img.src=card.img;
+    });
+}
+
+if("requestIdleCallback" in window){
+    requestIdleCallback(preloadDeckImages);
+}else{
+    setTimeout(preloadDeckImages,1500);
+}
+
 function shuffleDeck(){
     return [...tarotDeck].sort(()=>Math.random()-0.5);
 }
@@ -1453,11 +1471,19 @@ function renderReading(picks){
         }
 
         const img=document.createElement("img");
-        img.className="card-flip";
+        img.className="card-pending";
         img.style.animationDelay=(i*150)+"ms";
         img.crossOrigin="anonymous";
-        img.src=card.img;
         img.alt=card.name;
+
+        const revealCard=()=>{
+            img.classList.remove("card-pending");
+            img.classList.add("card-flip");
+        };
+        img.addEventListener("load",revealCard,{once:true});
+        img.addEventListener("error",revealCard,{once:true});
+
+        img.src=card.img;
 
         const name=document.createElement("div");
         name.className="tarot-name";
