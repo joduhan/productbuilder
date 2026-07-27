@@ -302,6 +302,13 @@ const savedTheme=localStorage.getItem("theme")
 
 applyTheme(savedTheme);
 
+function wikimediaThumb(url,width){
+    const match=url.match(/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/([0-9a-f])\/([0-9a-f]{2})\/(.+)$/);
+    if(!match) return url;
+    const [,a,b,filename]=match;
+    return `https://upload.wikimedia.org/wikipedia/commons/thumb/${a}/${b}/${filename}/${width}px-${filename}`;
+}
+
 const suits=[
     {title:"메이저 아르카나 (22장)",cards:tarotDeck.slice(0,22)},
     {title:"완드 (14장)",cards:tarotDeck.slice(22,36)},
@@ -331,7 +338,7 @@ suits.forEach(suit=>{
         cardEl.className="enc-card";
 
         const img=document.createElement("img");
-        img.src=card.img;
+        img.src=wikimediaThumb(card.img,250);
         img.alt=card.name;
         img.loading="lazy";
 

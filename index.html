@@ -1251,11 +1251,18 @@ const luckText={
 let currentMode=null;
 let lastPicks=[];
 
+function wikimediaThumb(url,width){
+    const match=url.match(/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/([0-9a-f])\/([0-9a-f]{2})\/(.+)$/);
+    if(!match) return url;
+    const [,a,b,filename]=match;
+    return `https://upload.wikimedia.org/wikipedia/commons/thumb/${a}/${b}/${filename}/${width}px-${filename}`;
+}
+
 function preloadDeckImages(){
     tarotDeck.forEach(card=>{
         const img=new Image();
         img.crossOrigin="anonymous";
-        img.src=card.img;
+        img.src=wikimediaThumb(card.img,250);
     });
 }
 
@@ -1349,7 +1356,8 @@ function renderHistoryList(history){
         item.onclick=()=>replayHistory(entry.mode,cards);
 
         const img=document.createElement("img");
-        img.src=cards[0].img;
+        img.loading="lazy";
+        img.src=wikimediaThumb(cards[0].img,250);
         item.appendChild(img);
 
         const info=document.createElement("div");
@@ -1479,9 +1487,16 @@ function renderReading(picks){
             img.classList.add("card-flip");
         };
         img.addEventListener("load",revealCard,{once:true});
-        img.addEventListener("error",revealCard,{once:true});
+        img.addEventListener("error",()=>{
+            if(img.dataset.fallback==="1"){
+                revealCard();
+            }else{
+                img.dataset.fallback="1";
+                img.src=card.img;
+            }
+        });
 
-        img.src=card.img;
+        img.src=wikimediaThumb(card.img,250);
 
         const name=document.createElement("div");
         name.className="tarot-name";
