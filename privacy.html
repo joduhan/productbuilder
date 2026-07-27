@@ -40,6 +40,10 @@
 
 <title>개인정보처리방침 - 타로 리딩</title>
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4facfe">
+<link rel="apple-touch-icon" href="icon.svg">
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3859431049159163" crossorigin="anonymous"></script>
 
 <style>
@@ -292,6 +296,14 @@ applyTheme(savedTheme);
 <a href="about.html"><span class="bn-icon">ℹ️</span>소개</a>
 <a href="privacy.html" class="active"><span class="bn-icon">🔒</span>정책</a>
 </nav>
+
+<script>
+if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>{
+        navigator.serviceWorker.register("sw.js").catch(()=>{});
+    });
+}
+</script>
 
 </body>
 </html>
